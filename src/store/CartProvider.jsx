@@ -2,6 +2,7 @@ import { useReducer } from "react";
 
 import CartContext from "./cart-context";
 
+//--------------------------------Reducer-------------------------------------------
 const defaultCartState = {
   items: [],
   totalAmount: 0,
@@ -71,10 +72,12 @@ function CartReducer(state, action) {
   return defaultCartState;
 }
 
+//--------------------------------Provider-------------------------------------------
+
 function CartProvider(props) {
   const [cartState, cartDispatch] = useReducer(CartReducer, defaultCartState);
 
-  const cartContext = {
+  const cartContextValue = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemHandler,
@@ -95,10 +98,12 @@ function CartProvider(props) {
   }
 
   return (
-    <CartContext.Provider value={cartContext}>
+    <CartContext.Provider value={cartContextValue}>
       {props.children}
     </CartContext.Provider>
   );
 }
+
+
 
 export default CartProvider;
