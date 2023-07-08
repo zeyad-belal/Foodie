@@ -1,6 +1,4 @@
-import { useContext, useState } from "react";
-
-// import CartContext from "../../store/CartContext";
+import {useState } from "react";
 import classes from "./Cart.module.css";
 import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
@@ -17,19 +15,16 @@ console.log(items)
   let [checkout, setCheckout] = useState(false);
   let [theError, setTheError] = useState("");
 
-  // const myCart = useContext(CartContext);
 
   const totalPrice = `$${totalAmount.toFixed(2)}`;
   const hasItems = items.length > 0;
 
   function removeItemHandler(id) {
-    dispatch({type: "REMOVE"} , id)
-    // myCart.removeItem(id);
+    dispatch({type: "REMOVE" , id} )
   }
 
   function addItemHandler(item) {
     dispatch({type: "ADD", item :{ ...item, amount: 1 }})
-    // myCart.addItem({ ...item, amount: 1 });
   }
 
   const cartItems = items.map((item) => (
@@ -39,8 +34,8 @@ console.log(items)
       name={item.name}
       amount={item.amount}
       price={item.price}
-      onAdd={(item)=> addItemHandler(item)}
-      onRemove={(item)=> removeItemHandler(item.id)}
+      onAdd={()=> addItemHandler(item)}
+      onRemove={()=> removeItemHandler(item.id)}
     />
   ));
 

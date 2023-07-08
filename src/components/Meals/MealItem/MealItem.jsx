@@ -1,14 +1,9 @@
-// import { useContext } from "react";
-
-// import cartContext from "../../../store/CartContext"
 import classes from "./MealItem.module.css";
 import MealItemForm from "./MealItemForm"
-import {useSelector, useDispatch} from "react-redux"
+import {useDispatch} from "react-redux"
 
 function MealItem(props) {
-
   const dispatch = useDispatch()
-  // const myCart = useContext(cartContext)
   
   function addItemHandler(amount){
     dispatch({type: "ADD" , 

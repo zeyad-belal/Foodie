@@ -1,14 +1,11 @@
-import { useReducer } from "react";
+import { createStore } from "redux";
 
-import CartContext from "./CartContext";
+const defaultCartState ={
+  items :[],
+  totalAmount : 0 
+}
 
-//--------------------------------Reducer-------------------------------------------
-const defaultCartState = {
-  items: [],
-  totalAmount: 0,
-};
-
-function CartReducer(state, action) {
+const CartReducer = (state = defaultCartState, action) => {
   if (action.type === "ADD") {
     const updatedTotalAmount =
       state.totalAmount + action.item.amount * action.item.price;
@@ -29,16 +26,14 @@ function CartReducer(state, action) {
       updatedItems = [...state.items];
       updatedItems[existingCartItemIndex] = updatedItem;
     } else {
-      updatedItems = state.items.concat(action.item);
+      updatedItems = [...state.items, action.item];
     }
 
     return {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
     };
-  }
-
-  if (action.type === "REMOVE") {
+  } else if (action.type === "REMOVE") {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.id
     );
@@ -60,47 +55,12 @@ function CartReducer(state, action) {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
     };
-  }
-
-  if (action.type === "CLEAR") {
+  } else if (action.type === "CLEAR") {
     return defaultCartState;
   }
+  return state;
+};
 
-  return defaultCartState;
-}
+const store = createStore(CartReducer);
 
-//--------------------------------Provider-------------------------------------------
-
-function CartProvider(props) {
-  const [cartState, cartDispatch] = useReducer(CartReducer, defaultCartState);
-
-  const cartContextValue = {
-    items: cartState.items,
-    totalAmount: cartState.totalAmount,
-    addItem: addItemHandler,
-    removeItem: removeItemHandler,
-    clearCart: clearCartHandler,
-  };
-
-  function addItemHandler(item) {
-    cartDispatch({ type: "ADD", item: item });
-  }
-
-  function removeItemHandler(id) {
-    cartDispatch({ type: "REMOVE", id: id });
-  }
-
-  function clearCartHandler() {
-    cartDispatch({ type: "CLEAR" });
-  }
-
-  return (
-    <CartContext.Provider value={cartContextValue}>
-      {props.children}
-    </CartContext.Provider>
-  );
-}
-
-
-
-export default CartProvider;
+export default store;
