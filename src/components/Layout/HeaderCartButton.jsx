@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState} from "react"
 
-import CartContext from "../../store/CartContext"
+// import CartContext from "../../store/CartContext"
 import CartIcon from "./CartIcon"
 import classes from "./HeaderCartButton.module.css"
+import {useSelector} from "react-redux"
 
 function HeaderCartButton(props){
+  const items = useSelector((state)=> state.items)
+
+  // const mycart = useContext(CartContext)
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
+  const numberOfCartItems = items.reduce((acum , curr)=> { return acum + curr.amount} , 0 )
 
-  const mycart = useContext(CartContext)
-
-  const numberOfCartItems = mycart.items.reduce((acum , curr)=> { return acum + curr.amount} , 0 )
-
-  const { items } = mycart;
 
   const btnClasses = `${classes.button} ${btnIsHighlighted ? classes.bump : ''}`;
 

@@ -1,40 +1,46 @@
 import { useContext, useState } from "react";
 
-import CartContext from "../../store/CartContext";
+// import CartContext from "../../store/CartContext";
 import classes from "./Cart.module.css";
 import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
 import Checkout from "./checkOut";
+import {useSelector, useDispatch} from "react-redux"
 
 function Cart(props) {
+  const items = useSelector((state)=> state.items)
+  const totalAmount = useSelector((state)=> state.totalAmount)
+console.log(items)
+  const dispatch = useDispatch()
+
   const [didSubmit, setDidSubmit] = useState(false);
-
   let [checkout, setCheckout] = useState(false);
-
   let [theError, setTheError] = useState("");
 
-  const myCart = useContext(CartContext);
+  // const myCart = useContext(CartContext);
 
-  const totalPrice = `$${myCart.totalAmount.toFixed(2)}`;
-  const hasItems = myCart.items.length > 0;
+  const totalPrice = `$${totalAmount.toFixed(2)}`;
+  const hasItems = items.length > 0;
 
   function removeItemHandler(id) {
-    myCart.removeItem(id);
+    dispatch({type: "REMOVE"} , id)
+    // myCart.removeItem(id);
   }
 
   function addItemHandler(item) {
-    myCart.addItem({ ...item, amount: 1 });
+    dispatch({type: "ADD", item :{ ...item, amount: 1 }})
+    // myCart.addItem({ ...item, amount: 1 });
   }
 
-  const cartItems = myCart.items.map((item) => (
+  const cartItems = items.map((item) => (
     <CartItem
       key={item.id}
       id={item.id}
       name={item.name}
       amount={item.amount}
       price={item.price}
-      onAdd={addItemHandler.bind(null, item)}
-      onRemove={removeItemHandler.bind(null, item.id)}
+      onAdd={(item)=> addItemHandler(item)}
+      onRemove={(item)=> removeItemHandler(item.id)}
     />
   ));
 
@@ -55,7 +61,7 @@ function Cart(props) {
           method: "POST",
           body: JSON.stringify({
             user: userData,
-            order: myCart.items,
+            order: items,
           }),
         }
       );
@@ -68,7 +74,7 @@ function Cart(props) {
     }
 
     setDidSubmit(true);
-    myCart.clearCart();
+    dispatch({type: "CLEAR"})
   }
 
   const content = (
