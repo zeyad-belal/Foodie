@@ -1,21 +1,20 @@
-import { useContext } from "react";
-
-import cartContext from "../../../store/CartContext"
 import classes from "./MealItem.module.css";
 import MealItemForm from "./MealItemForm"
-
+import {useDispatch} from "react-redux"
 
 function MealItem(props) {
-  const myCart = useContext(cartContext)
+  const dispatch = useDispatch()
+  
   function addItemHandler(amount){
-    
-    myCart.addItem({
-      key :props.id,
-      id: props.id,
-      name: props.name,
-      description : props.description,
-      amount :amount,
-      price: props.price
+    dispatch({type: "ADD" , 
+      item:{
+        key :props.id,
+        id: props.id,
+        name: props.name,
+        description : props.description,
+        amount :amount,
+        price: props.price
+      }
     })
   }
   const price =`$${props.price.toFixed(2)}`
