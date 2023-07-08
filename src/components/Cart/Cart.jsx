@@ -4,11 +4,11 @@ import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
 import Checkout from "./checkOut";
 import {useSelector, useDispatch} from "react-redux"
+import {cartActions} from "../../store/store"
 
-function Cart(props) {
+function Cart() {
   const items = useSelector((state)=> state.items)
   const totalAmount = useSelector((state)=> state.totalAmount)
-console.log(items)
   const dispatch = useDispatch()
 
   const [didSubmit, setDidSubmit] = useState(false);
@@ -20,11 +20,11 @@ console.log(items)
   const hasItems = items.length > 0;
 
   function removeItemHandler(id) {
-    dispatch({type: "REMOVE" , id} )
+    dispatch(cartActions.remove(id))
   }
-
+  
   function addItemHandler(item) {
-    dispatch({type: "ADD", item :{ ...item, amount: 1 }})
+    dispatch(cartActions.add({ ...item, amount: 1 }))
   }
 
   const cartItems = items.map((item) => (
@@ -72,6 +72,11 @@ console.log(items)
     dispatch({type: "CLEAR"})
   }
 
+  function toggleCart(){
+    dispatch(cartActions.toggleCart())
+  }
+
+
   const content = (
     <>
       <ul className={classes["cart-items"]}>{cartItems}</ul>
@@ -84,7 +89,7 @@ console.log(items)
       )}
       {!checkout && (
         <div className={classes.actions}>
-          <button className={classes["button--alt"]} onClick={props.toggleCart}>
+          <button className={classes["button--alt"]} onClick={toggleCart}>
             Close
           </button>
           {hasItems && (
@@ -101,7 +106,7 @@ console.log(items)
     <>
       <p>Order was received !</p>
       <div className={classes.actions}>
-        <button className={classes["button--alt"]} onClick={props.toggleCart}>
+        <button className={classes["button--alt"]} onClick={toggleCart}>
           close
         </button>
       </div>
@@ -111,7 +116,7 @@ console.log(items)
   const errorContent = <p>{theError}</p>;
 
   return (
-    <Modal toggleCart={props.toggleCart}>
+    <Modal>
       {!didSubmit && content}
       {didSubmit && !theError && wasSubmited}
       {theError && errorContent}
