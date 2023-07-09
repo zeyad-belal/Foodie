@@ -1,21 +1,21 @@
 import classes from "./MealItem.module.css";
 import MealItemForm from "./MealItemForm"
 import {useDispatch} from "react-redux"
+import {cartActions} from "../../../store/store"
 
 function MealItem(props) {
   const dispatch = useDispatch()
   
   function addItemHandler(amount){
-    dispatch({type: "ADD" , 
-      item:{
+    dispatch(cartActions.add({
         key :props.id,
         id: props.id,
         name: props.name,
         description : props.description,
         amount :amount,
         price: props.price
-      }
-    })
+      }))
+
   }
   const price =`$${props.price.toFixed(2)}`
   return (

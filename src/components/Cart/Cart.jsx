@@ -4,27 +4,31 @@ import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
 import Checkout from "./checkOut";
 import {useSelector, useDispatch} from "react-redux"
+import {cartActions} from "../../store/store"
 
-function Cart(props) {
+function Cart() {
   const items = useSelector((state)=> state.items)
   const totalAmount = useSelector((state)=> state.totalAmount)
-console.log(items)
   const dispatch = useDispatch()
 
   const [didSubmit, setDidSubmit] = useState(false);
   let [checkout, setCheckout] = useState(false);
   let [theError, setTheError] = useState("");
 
-
-  const totalPrice = `$${totalAmount.toFixed(2)}`;
+  let totalPrice;
+  if(totalAmount > 0){
+    totalPrice = `$${totalAmount.toFixed(2)}`;
+  }else{
+    totalPrice = `$0.00`;
+  }
   const hasItems = items.length > 0;
 
   function removeItemHandler(id) {
-    dispatch({type: "REMOVE" , id} )
+    dispatch(cartActions.remove(id))
   }
-
+  
   function addItemHandler(item) {
-    dispatch({type: "ADD", item :{ ...item, amount: 1 }})
+    dispatch(cartActions.add({ ...item, amount: 1 }))
   }
 
   const cartItems = items.map((item) => (
@@ -68,9 +72,14 @@ console.log(items)
       setTheError(error.message);
     }
 
-    setDidSubmit(true);
-    dispatch({type: "CLEAR"})
+    setDidSubmit(true);    
+    dispatch(cartActions.clear())
   }
+
+  function toggleCart(){
+    dispatch(cartActions.toggleCart())
+  }
+
 
   const content = (
     <>
@@ -79,12 +88,12 @@ console.log(items)
         <span>Total Amount</span>
         <span>{totalPrice}</span>
       </div>
-      {checkout && (
+      {checkout && items.length != 0 && (
         <Checkout onOrder={submitOrderToServer} cancelHandler={cancelHandler} />
       )}
       {!checkout && (
         <div className={classes.actions}>
-          <button className={classes["button--alt"]} onClick={props.toggleCart}>
+          <button className={classes["button--alt"]} onClick={toggleCart}>
             Close
           </button>
           {hasItems && (
@@ -101,7 +110,7 @@ console.log(items)
     <>
       <p>Order was received !</p>
       <div className={classes.actions}>
-        <button className={classes["button--alt"]} onClick={props.toggleCart}>
+        <button className={classes["button--alt"]} onClick={toggleCart}>
           close
         </button>
       </div>
@@ -111,7 +120,7 @@ console.log(items)
   const errorContent = <p>{theError}</p>;
 
   return (
-    <Modal toggleCart={props.toggleCart}>
+    <Modal>
       {!didSubmit && content}
       {didSubmit && !theError && wasSubmited}
       {theError && errorContent}
