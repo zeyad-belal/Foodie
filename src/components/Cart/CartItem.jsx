@@ -2,8 +2,6 @@ import classes from './CartItem.module.css';
 
 const CartItem = (props) => {
   const price = isNaN(props.price) ? 'N/A' : `$${props.price}`;
-  console.log(props.price,price)
-  console.log(props.id)
 
   return (
     <li className={classes['cart-item']} key ={props.id}>

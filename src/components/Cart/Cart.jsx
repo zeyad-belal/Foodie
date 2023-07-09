@@ -15,8 +15,12 @@ function Cart() {
   let [checkout, setCheckout] = useState(false);
   let [theError, setTheError] = useState("");
 
-
-  const totalPrice = `$${totalAmount.toFixed(2)}`;
+  let totalPrice;
+  if(totalAmount > 0){
+    totalPrice = `$${totalAmount.toFixed(2)}`;
+  }else{
+    totalPrice = `$0.00`;
+  }
   const hasItems = items.length > 0;
 
   function removeItemHandler(id) {
@@ -68,8 +72,8 @@ function Cart() {
       setTheError(error.message);
     }
 
-    setDidSubmit(true);
-    dispatch({type: "CLEAR"})
+    setDidSubmit(true);    
+    dispatch(cartActions.clear())
   }
 
   function toggleCart(){
@@ -84,7 +88,7 @@ function Cart() {
         <span>Total Amount</span>
         <span>{totalPrice}</span>
       </div>
-      {checkout && (
+      {checkout && items.length != 0 && (
         <Checkout onOrder={submitOrderToServer} cancelHandler={cancelHandler} />
       )}
       {!checkout && (
