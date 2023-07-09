@@ -1,12 +1,10 @@
-import  {useState} from "react"
-
 import Header from "./components/Layout/Header"
 import Meal   from "./components/Meals/Meal"
 import Cart from "./components/Cart/Cart"
-
+import { useSelector } from "react-redux/es/hooks/useSelector"
 
 function App() {
-  const [cartIsShown ,setCartIsShown] = useState(false)
+  const cartIsShown = useSelector((state)=> state.cartIsShown)
 
   function toggleCart (){
     setCartIsShown(prevState => !prevState)

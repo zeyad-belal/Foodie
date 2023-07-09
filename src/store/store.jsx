@@ -23,7 +23,7 @@ const cartSlice = createSlice({
       state.totalAmount = state.totalAmount +  action.payload.amount * action.payload.price;
     },
     toggleCart(state){
-      state.cartIsShown = ! state.cartIsShown
+      state.cartIsShown = !state.cartIsShown
     }
   }
 })
@@ -85,7 +85,6 @@ const cartSlice = createSlice({
 
 const store = configureStore({
   reducer: cartSlice.reducer
-  
 });
 
 export const cartActions = cartSlice.actions
