@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { cartActions } from "../../store/store";
+import { cartActions } from "../../store/cartSlice";
 import classes from "./Modal.module.css";
 import ReactDom from "react-dom";
 

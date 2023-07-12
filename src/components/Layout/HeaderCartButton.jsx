@@ -2,11 +2,11 @@ import { useEffect, useState} from "react"
 import CartIcon from "./CartIcon"
 import classes from "./HeaderCartButton.module.css"
 import { useDispatch, useSelector } from "react-redux"
-import {cartActions} from "../../store/store"
+import {cartActions} from "../../store/cartSlice"
 
 function HeaderCartButton(){
   const dispatch = useDispatch()
-  const items = useSelector((state)=> state.items)
+  const items = useSelector((state)=> state.cart.items)
 
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
   const numberOfCartItems = items.reduce((acum , curr)=> { return acum + curr.amount} , 0 )

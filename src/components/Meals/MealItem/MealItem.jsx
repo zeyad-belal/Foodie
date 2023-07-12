@@ -1,7 +1,7 @@
 import classes from "./MealItem.module.css";
 import MealItemForm from "./MealItemForm"
 import {useDispatch} from "react-redux"
-import {cartActions} from "../../../store/store"
+import {cartActions} from "../../../store/cartSlice"
 
 function MealItem(props) {
   const dispatch = useDispatch()
