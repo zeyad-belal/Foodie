@@ -4,7 +4,7 @@ import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
 import Checkout from "./checkOut";
 import {useSelector, useDispatch} from "react-redux"
-import {cartActions} from "../../store/store"
+import {cartActions} from "../../store/cartSlice"
 
 function Cart() {
   const items = useSelector((state)=> state.items)
