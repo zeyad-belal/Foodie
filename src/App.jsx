@@ -6,13 +6,11 @@ import { useSelector } from "react-redux/es/hooks/useSelector"
 function App() {
   const cartIsShown = useSelector((state)=> state.cartIsShown)
 
-  function toggleCart (){
-    setCartIsShown(prevState => !prevState)
-  }
+
 
   return (
     <>
-      {cartIsShown && <Cart toggleCart={toggleCart} />}
+      {cartIsShown && <Cart />}
       <Header />
       <main>
         <Meal />

@@ -53,6 +53,7 @@ const cartSlice = createSlice({
 })
 
 
+
 const store = configureStore({
   reducer: cartSlice.reducer
 });
