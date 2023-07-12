@@ -1,4 +1,6 @@
 import {createSlice ,configureStore} from '@reduxjs/toolkit'
+import axios from 'axios';
+import {toast } from "react-toastify";
 
 const initialState ={
   items :[],
@@ -52,6 +54,43 @@ const cartSlice = createSlice({
   }
 })
 
+// custom action creator to handle updating cart data on firebase server
+export const sendCartItems = (cart) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(
+        "https://react-fetching-d4ab5-default-rtdb.firebaseio.com/cart.json",
+        JSON.stringify(cart)
+      );
+
+      response.status >= 200 && response.status <= 299 ?
+        toast.success("Added to Cart", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }) : ""
+      
+      }catch (error) {
+      console.log(error);
+      toast.error("Adding to Cart Failed!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+};
+
 
 
 const store = configureStore({
@@ -59,5 +98,6 @@ const store = configureStore({
 });
 
 export const cartActions = cartSlice.actions
+
 
 export default store;

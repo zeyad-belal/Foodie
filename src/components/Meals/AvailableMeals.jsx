@@ -3,6 +3,7 @@ import {useEffect , useState} from "react"
 import classes from "./AvailableMeals.module.css";
 import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
+import 'react-toastify/dist/ReactToastify.css';
 
 function AvailableMeals() {
   let [meals , setMeals] = useState([])
