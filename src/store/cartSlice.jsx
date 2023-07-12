@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { notiActions } from "./notiSlice";
 
 const initialState ={
   items :[],
   totalAmount : 0,
-  cartIsShown:false
+  cartIsShown:false,
+  changed: false
 }
 
 export const cartSlice = createSlice({
@@ -13,9 +13,10 @@ export const cartSlice = createSlice({
   initialState,
   reducers:{
     add(state, action){
-      const existingCartItemIndex = state.cart.items.findIndex( (item) => item.id === action.payload.id );
+      const existingCartItemIndex = state.items.findIndex( (item) => item.id === action.payload.id );
       const existingCartItem = state.items[existingCartItemIndex];
       let updatedItems;
+      state.changed = true;
       if(existingCartItem){
         let updatedItem = {...existingCartItem , amount: existingCartItem.amount + action.payload.amount}
         updatedItems = [...state.items]
@@ -32,7 +33,7 @@ export const cartSlice = createSlice({
       const existingItem = state.items[existingCartItemIndex];
       const updatedTotalAmount = state.totalAmount - existingItem.price;
       let updatedItems;
-  
+      state.changed = true;
       if (existingItem.amount === 1) {
         updatedItems = state.items.filter((item) => item.id !== action.payload);
         state.items = updatedItems;
@@ -71,12 +72,14 @@ export const sendCartItems = (cart) => {
 
     const sendRequest = async () => {
       const response = await fetch(
-        'https://react-http-6b4a6.firebaseio.com/cart.json',
+        'https://react-fetching-d4ab5-default-rtdb.firebaseio.com/carts.json',
         {
           method: 'PUT',
-          body: JSON.stringify(cart),
-        }
-      );
+          body: JSON.stringify({
+            items: cart.items,
+            totalAmount: cart.totalAmount,
+          })
+        });
 
       if (!response.ok) {
         throw new Error('Sending cart data failed.');
@@ -105,19 +108,42 @@ export const sendCartItems = (cart) => {
   };
 };
 
-// export const fetchCartItems =(cart) => {
-//   return async (dispatch) => {
-//     try{
-//       const res = await axios.get("https://react-fetching-d4ab5-default-rtdb.firebaseio.com/cart.json")
-//       const cartData = await res.data.json()
-//       return data 
-//     }catch(error){
-//       console.log(error)
-//     }
 
-//     dispatch(replaceCart(cartData))
-//   }
-// }
+export const fetchCartItems =() => {
+    return async (dispatch) => {
+      const sendRequest = async () => {
+        const response = await fetch(
+          'https://react-fetching-d4ab5-default-rtdb.firebaseio.com/carts.json');
+
+          if (!response.ok) {
+            throw new Error('Sending cart data failed.');
+          }
+
+          const data = await response.json();
+
+          return data;
+        };
+
+      try{
+        const cartData = await sendRequest()
+        console.log(cartData)
+        dispatch(cartSlice.actions.replaceCart({
+          items: cartData.items || [],
+          totalAmount: cartData.totalAmount,
+        }))
+        
+      }catch(error){
+        dispatch(
+          notiActions.showNotification({
+          status: 'error',
+          title: 'Error!',
+          message: 'Fetching cart data failed!',
+        }))
+      }
+
+    }
+  }
+
 
 
 export const cartActions = cartSlice.actions;

@@ -7,8 +7,8 @@ import {useSelector, useDispatch} from "react-redux"
 import {cartActions} from "../../store/cartSlice"
 
 function Cart() {
-  const items = useSelector((state)=> state.items)
-  const totalAmount = useSelector((state)=> state.totalAmount)
+  const items = useSelector((state)=> state.cart.items)
+  const totalAmount = useSelector((state)=> state.cart.totalAmount)
   const dispatch = useDispatch()
 
   const [didSubmit, setDidSubmit] = useState(false);
