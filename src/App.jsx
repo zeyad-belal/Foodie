@@ -5,14 +5,13 @@ import { useSelector } from "react-redux/es/hooks/useSelector";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCartItems,sendCartItems } from "./store/cartSlice";
-import Notification from "./components/UI/Notifcations";
+import { ToastContainer } from "react-toastify";
 
 let firstRender =true;
 
 function App() {
-  const cartIsShown = useSelector((state) => state.cart.cartIsShown);
-  const cart = useSelector((state) => state.cart);
-  const notification = useSelector((state) => state.noti.notification);
+  const cartIsShown = useSelector((state) => state.cartIsShown);
+  const cart = useSelector((state) => state);
   const dispatch = useDispatch((state) => state);
 
   useEffect(()=>{
@@ -31,17 +30,11 @@ function App() {
 
   return (
     <>
-      {notification && (
-        <Notification
-          status={notification.status}
-          title={notification.title}
-          message={notification.message}
-        />
-      )}
       {cartIsShown && <Cart />}
       <Header />
       <main>
         <Meal />
+        <ToastContainer />
       </main>
     </>
   );

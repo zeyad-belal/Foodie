@@ -6,7 +6,7 @@ import {cartActions} from "../../store/cartSlice"
 
 function HeaderCartButton(){
   const dispatch = useDispatch()
-  const items = useSelector((state)=> state.cart.items)
+  const items = useSelector((state)=> state.items)
 
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
   const numberOfCartItems = items.reduce((acum , curr)=> { return acum + curr.amount} , 0 )

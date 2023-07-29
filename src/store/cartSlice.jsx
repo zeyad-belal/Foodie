@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { notiActions } from "./notiSlice";
+import { toast } from "react-toastify";
 
 const initialState ={
   items :[],
@@ -62,13 +62,6 @@ export const cartSlice = createSlice({
 // custom action creator to handle updating cart data on firebase server
 export const sendCartItems = (cart) => {
   return async (dispatch) => {
-    dispatch(
-      notiActions.showNotification({
-        status: 'pending',
-        title: 'Sending...',
-        message: 'Sending cart data!',
-      })
-    );
 
     const sendRequest = async () => {
       const response = await fetch(
@@ -89,21 +82,8 @@ export const sendCartItems = (cart) => {
     try {
       await sendRequest();
 
-      dispatch(
-        notiActions.showNotification({
-          status: 'success',
-          title: 'Success!',
-          message: 'Sent cart data successfully!',
-        })
-      );
     } catch (error) {
-      dispatch(
-        notiActions.showNotification({
-          status: 'error',
-          title: 'Error!',
-          message: 'Sending cart data failed!',
-        })
-      );
+      toast(error)
     }
   };
 };
@@ -126,19 +106,14 @@ export const fetchCartItems =() => {
 
       try{
         const cartData = await sendRequest()
-        console.log(cartData)
+        // console.log(cartData)
         dispatch(cartSlice.actions.replaceCart({
           items: cartData.items || [],
           totalAmount: cartData.totalAmount,
         }))
         
       }catch(error){
-        dispatch(
-          notiActions.showNotification({
-          status: 'error',
-          title: 'Error!',
-          message: 'Fetching cart data failed!',
-        }))
+        toast(error)
       }
 
     }
