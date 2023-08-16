@@ -13,48 +13,31 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     add(state, action) {
-      const existingCartItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
-      );
+      const item = action.payload;
+      const existingCartItemIndex = state.items.findIndex((item) => item.id === action.payload.id);
       const existingCartItem = state.items[existingCartItemIndex];
-      let updatedItems;
       state.changed = true;
       if (existingCartItem) {
-        let updatedItem = {
-          ...existingCartItem,
-          amount: existingCartItem.amount + action.payload.amount,
-        };
-        updatedItems = [...state.items];
-        updatedItems[existingCartItemIndex] = updatedItem;
-        state.items = updatedItems;
+        state.items[existingCartItemIndex].amount += item.amount;
       } else {
-        updatedItems = [...state.items, action.payload];
-        state.items = updatedItems;
+        state.items.push(item);
       }
-      state.totalAmount =
-        state.totalAmount + action.payload.amount * action.payload.price;
+      state.totalAmount += item.amount * item.price;
     },
     remove(state, action) {
-      const existingCartItemIndex = state.items.findIndex(
-        (item) => item.id === action.payload
-      );
-      const existingItem = state.items[existingCartItemIndex];
-      const updatedTotalAmount = state.totalAmount - existingItem.price;
-      let updatedItems;
+      const id = action.payload;
+      const existingCartItemIndex = state.items.findIndex( (cartItem) => cartItem.id === id );
       state.changed = true;
-      if (existingItem.amount === 1) {
-        updatedItems = state.items.filter((item) => item.id !== action.payload);
-        state.items = updatedItems;
-      } else {
-        const updatedItem = {
-          ...existingItem,
-          amount: existingItem.amount - 1,
-        };
-        updatedItems = [...state.items];
-        updatedItems[existingCartItemIndex] = updatedItem;
-        state.items = updatedItems;
+      if (existingCartItemIndex !== -1) {
+        const existingCartItem = state.items[existingCartItemIndex];
+        if (existingCartItem.amount === 1) {
+          state.items.splice(existingCartItemIndex, 1);
+        } else {
+          existingCartItem.amount -= 1;
+        }
+        state.totalAmount -= existingCartItem.price;
+        state.totalItemsNum -= 1;
       }
-      state.totalAmount = updatedTotalAmount;
     },
     clear(state) {
       state.items = [];
@@ -110,11 +93,11 @@ export const fetchCartItems = () => {
 
     try {
       const cartData = await sendRequest();
-      // console.log(cartData)
+
       dispatch(
         cartSlice.actions.replaceCart({
           items: cartData.items || [],
-          totalAmount: cartData.totalAmount,
+          totalAmount: cartData.totalAmount || 0,
         })
       );
     } catch (error) {
